@@ -112,7 +112,7 @@ def multiple_capture_options_complex_board():
     board.add_piece(7, Player.WHITE, PieceClass.MAN)
     board.add_piece(19, Player.WHITE, PieceClass.MAN)
     board.add_piece(14, Player.WHITE, PieceClass.MAN)
-    board.add_piece(32, Player.WHITE, PieceClass.MAN)
+    board.add_piece(37, Player.WHITE, PieceClass.MAN)
     board.add_piece(29, Player.WHITE, PieceClass.MAN)
     return board
 

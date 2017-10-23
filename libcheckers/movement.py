@@ -201,6 +201,9 @@ class Board(object):
         result = []
         for line in lines_of_sight:
             for i in range(0, len(line) - 1):
+                # Cannot jump over own pieces.
+                if self.owner[line[i]] == own_color:
+                    break
                 # Cannot capture protected pieces.
                 if self.owner[line[i]] and self.owner[line[i + 1]]:
                     break
