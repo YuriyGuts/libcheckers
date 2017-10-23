@@ -40,11 +40,12 @@ class ForwardMove(BaseMove):
         if board.owner[self.end_index]:
             msg = 'Cannot move to a non-empty square ({0})'.format(self.end_index)
             raise InvalidMoveException(msg)
-        if board.owner[self.start_index] == Player.WHITE and self.end_index > self.start_index:
-            msg = 'White pieces cannot move south unless they are kings'
-            raise InvalidMoveException(msg)
-        if board.owner[self.start_index] == Player.BLACK and self.end_index < self.start_index:
-            msg = 'Black pieces cannot move north unless they are kings'
+        is_backward_move = (
+            (board.owner[self.start_index] == Player.WHITE and self.end_index > self.start_index) or
+            (board.owner[self.start_index] == Player.BLACK and self.end_index < self.start_index)
+        )
+        if is_backward_move and board.piece_class[self.start_index] != PieceClass.KING:
+            msg = 'Cannot freely move backwards unless the piece is a king'
             raise InvalidMoveException(msg)
 
         new_board = board.clone()
@@ -323,7 +324,9 @@ class Board(object):
             len(white_squares) == 1 and
             len(black_squares) == 1 and
             self.piece_class[white_squares[0]] == PieceClass.KING and
-            self.piece_class[black_squares[0]] == PieceClass.KING
+            self.piece_class[black_squares[0]] == PieceClass.KING and
+            not self.get_capturable_pieces(white_squares[0]) and
+            not self.get_capturable_pieces(black_squares[0])
         )
         if only_one_king_each:
             return GameOverReason.DRAW

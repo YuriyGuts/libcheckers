@@ -33,6 +33,14 @@ def one_vs_one_men_capture_board():
 
 
 @pytest.fixture
+def one_vs_one_kings_capture_board():
+    board = Board()
+    board.add_piece(28, Player.WHITE, PieceClass.KING)
+    board.add_piece(23, Player.BLACK, PieceClass.KING)
+    return board
+
+
+@pytest.fixture
 def one_vs_one_men_backwards_capture_board():
     board = Board()
     board.add_piece(23, Player.WHITE, PieceClass.MAN)

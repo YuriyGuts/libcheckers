@@ -19,18 +19,30 @@ def test_forward_move_from_empty_square_raises(one_vs_one_men_capture_board):
         move.apply(board)
 
 
-def test_forward_move_white_south_raises(one_vs_one_men_capture_board):
+def test_forward_move_man_white_south_raises(one_vs_one_men_capture_board):
     board = one_vs_one_men_capture_board
     move = ForwardMove(28, 33)
     with pytest.raises(InvalidMoveException):
         move.apply(board)
 
 
-def test_forward_move_black_north_raises(one_vs_one_men_capture_board):
+def test_forward_move_man_black_north_raises(one_vs_one_men_capture_board):
     board = one_vs_one_men_capture_board
     move = ForwardMove(23, 18)
     with pytest.raises(InvalidMoveException):
         move.apply(board)
+
+
+def test_forward_move_king_white_south_accepts(one_vs_one_kings_capture_board):
+    board = one_vs_one_kings_capture_board
+    move = ForwardMove(28, 33)
+    move.apply(board)
+
+
+def test_forward_move_king_black_north_accepts(one_vs_one_kings_capture_board):
+    board = one_vs_one_kings_capture_board
+    move = ForwardMove(23, 18)
+    move.apply(board)
 
 
 def test_capture_protected_raises(two_vs_two_protected_kings_board):
@@ -44,6 +56,16 @@ def test_capture_protected_raises(two_vs_two_protected_kings_board):
     move = CaptureMove(33, 20)
     with pytest.raises(InvalidMoveException):
         move.apply(board)
+
+
+def test_capture_ending_in_home_row_promotes():
+    board = Board()
+    board.add_piece(15, Player.WHITE, PieceClass.MAN)
+    board.add_piece(10, Player.BLACK, PieceClass.MAN)
+    move = CaptureMove(15, 4)
+    new_board = move.apply(board)
+    assert new_board.owner[4] == Player.WHITE
+    assert new_board.piece_class[4] == PieceClass.KING
 
 
 def test_man_when_finishing_move_in_home_row_gets_promoted():
@@ -385,9 +407,17 @@ def test_game_over_no_black_pieces():
     assert board.check_game_over(Player.BLACK) == GameOverReason.WHITE_WON
 
 
-def test_game_over_one_king_each():
+def test_game_over_one_king_each_draw():
     board = Board()
     board.add_piece(13, Player.WHITE, PieceClass.KING)
     board.add_piece(32, Player.BLACK, PieceClass.KING)
     assert board.check_game_over(Player.WHITE) == GameOverReason.DRAW
     assert board.check_game_over(Player.BLACK) == GameOverReason.DRAW
+
+
+def test_game_over_one_king_each_adjacent_not_draw():
+    board = Board()
+    board.add_piece(28, Player.WHITE, PieceClass.KING)
+    board.add_piece(32, Player.BLACK, PieceClass.KING)
+    assert board.check_game_over(Player.WHITE) is None
+    assert board.check_game_over(Player.BLACK) is None
