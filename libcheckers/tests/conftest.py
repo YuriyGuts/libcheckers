@@ -86,8 +86,8 @@ def two_vs_two_protected_kings_board():
 @pytest.fixture
 def one_vs_one_kings_cornered_board():
     board = Board()
-    board.add_piece(46, Player.WHITE, PieceClass.MAN)
-    board.add_piece(5, Player.BLACK, PieceClass.MAN)
+    board.add_piece(46, Player.WHITE, PieceClass.KING)
+    board.add_piece(5, Player.BLACK, PieceClass.KING)
     return board
 
 

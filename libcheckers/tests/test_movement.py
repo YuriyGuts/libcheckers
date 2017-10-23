@@ -186,19 +186,19 @@ def test_get_movement_destinations(one_vs_one_men_surrender_board):
     assert sorted(board.get_free_movement_destinations(28)) == [22, 23]
 
 
-def test_get_movement_destinations(one_vs_one_men_surrender_board):
+def test_get_movement_destinations_1v1_men(one_vs_one_men_surrender_board):
     board = one_vs_one_men_surrender_board
     assert sorted(board.get_free_movement_destinations(18)) == [22, 23]
     assert sorted(board.get_free_movement_destinations(28)) == [22, 23]
 
 
-def test_get_movement_destinations(one_vs_one_kings_cornered_board):
+def test_get_movement_destinations_1v1_kings(one_vs_one_kings_cornered_board):
     board = one_vs_one_kings_cornered_board
-    assert sorted(board.get_movement_destinations(5)) == [10, 14, 19, 23, 28, 32, 37, 41]
-    assert sorted(board.get_movement_destinations(46)) == [10, 14, 19, 23, 28, 32, 37, 41]
+    assert sorted(board.get_free_movement_destinations(5)) == [10, 14, 19, 23, 28, 32, 37, 41]
+    assert sorted(board.get_free_movement_destinations(46)) == [10, 14, 19, 23, 28, 32, 37, 41]
 
 
-def test_get_movement_destinations(two_vs_one_kings_board):
+def test_get_movement_destinations_2v1_kings(two_vs_one_kings_board):
     board = two_vs_one_kings_board
     assert sorted(board.get_free_movement_destinations(31)) == [22, 26, 27, 36, 37, 42, 48]
     assert sorted(board.get_free_movement_destinations(34)) == [23, 25, 29, 30, 39, 40, 43, 45, 48]
@@ -211,7 +211,7 @@ def test_get_capture_landing_pos_men(one_vs_one_men_capture_board):
     assert board.get_available_capture_landing_positions(28, 23) == [19]
 
 
-def test_get_capture_landing_pos_men(one_vs_one_men_backwards_capture_board):
+def test_get_capture_landing_pos_men_backwards(one_vs_one_men_backwards_capture_board):
     board = one_vs_one_men_backwards_capture_board
     assert board.get_available_capture_landing_positions(23, 28) == [32]
     assert board.get_available_capture_landing_positions(28, 23) == [19]
