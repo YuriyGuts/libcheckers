@@ -288,10 +288,14 @@ class Board(object):
         while queue:
             board_before, move, prev_moves = queue.popleft()
 
+            # No not allow promoting the piece if it does not finish the move on the home row.
+            class_before = board_before.piece_class[move.start_index]
+
             # Keep the captured pieces because they cannot be removed till the end of turn.
             opponent_quare = move.find_opponent_square(board_before)
             board_after = move.apply(board_before)
             board_after.owner[opponent_quare] = Player.ZOMBIE
+            board_after.piece_class[move.end_index] = class_before
 
             next_attack_options = [
                 (move.end_index, target)

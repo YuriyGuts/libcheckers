@@ -104,6 +104,15 @@ def multiple_capture_options_men_board():
 
 
 @pytest.fixture
+def combo_via_home_row_board():
+    board = Board()
+    board.add_piece(15, Player.WHITE, PieceClass.MAN)
+    board.add_piece(10, Player.BLACK, PieceClass.MAN)
+    board.add_piece(22, Player.BLACK, PieceClass.MAN)
+    return board
+
+
+@pytest.fixture
 def multiple_equal_combo_captures_board():
     board = Board()
     board.add_piece(17, Player.BLACK, PieceClass.KING)

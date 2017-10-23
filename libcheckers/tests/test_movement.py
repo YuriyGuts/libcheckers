@@ -348,6 +348,11 @@ def test_get_available_moves_2v1_kings(two_vs_one_kings_board):
     assert_moves_equal(actual_moves, expected_moves)
 
 
+def test_get_available_moves_combo_via_home_row_no_promotion(combo_via_home_row_board):
+    board = combo_via_home_row_board
+    assert board.get_available_moves(Player.WHITE) == [CaptureMove(15, 4)]
+
+
 def test_combo_capture_keeps_pieces_till_end_of_move(multiple_equal_combo_captures_board):
     board = multiple_equal_combo_captures_board
     actual_moves = board.get_available_moves(Player.BLACK)
