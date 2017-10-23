@@ -6,3 +6,9 @@ class Player(object):
 class PieceClass(object):
     MAN = 1
     KING = 2
+
+
+class GameOverReason(object):
+    WHITE_WON = 1
+    BLACK_WON = 2
+    DRAW = 3

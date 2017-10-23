@@ -1,7 +1,7 @@
 import pytest
 
 from libcheckers import InvalidMoveException
-from libcheckers.enum import Player, PieceClass
+from libcheckers.enum import Player, PieceClass, GameOverReason
 from libcheckers.movement import Board, ForwardMove, CaptureMove, ComboCaptureMove
 
 
@@ -357,3 +357,37 @@ def test_get_available_moves_filled_board(completely_filled_board):
     board = completely_filled_board
     assert board.get_available_moves(Player.WHITE) == []
     assert board.get_available_moves(Player.BLACK) == []
+
+
+def test_get_available_moves_no_pieces():
+    board = Board()
+    assert board.get_available_moves(Player.WHITE) == []
+    assert board.get_available_moves(Player.BLACK) == []
+
+
+def test_game_over_still_playable():
+    board = Board()
+    board.add_piece(13, Player.BLACK, PieceClass.MAN)
+    board.add_piece(32, Player.WHITE, PieceClass.MAN)
+    assert board.check_game_over(Player.WHITE) is None
+    assert board.check_game_over(Player.BLACK) is None
+
+
+def test_game_over_no_white_pieces():
+    board = Board()
+    board.add_piece(32, Player.BLACK, PieceClass.MAN)
+    assert board.check_game_over(Player.WHITE) == GameOverReason.BLACK_WON
+
+
+def test_game_over_no_black_pieces():
+    board = Board()
+    board.add_piece(32, Player.WHITE, PieceClass.MAN)
+    assert board.check_game_over(Player.BLACK) == GameOverReason.WHITE_WON
+
+
+def test_game_over_one_king_each():
+    board = Board()
+    board.add_piece(13, Player.WHITE, PieceClass.KING)
+    board.add_piece(32, Player.BLACK, PieceClass.KING)
+    assert board.check_game_over(Player.WHITE) == GameOverReason.DRAW
+    assert board.check_game_over(Player.BLACK) == GameOverReason.DRAW

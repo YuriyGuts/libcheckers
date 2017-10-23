@@ -3,7 +3,7 @@ from collections import deque
 from copy import deepcopy
 
 from libcheckers import BoardConfig, InvalidMoveException
-from libcheckers.enum import Player, PieceClass
+from libcheckers.enum import Player, PieceClass, GameOverReason
 from libcheckers.utils import (
     index_to_coords,
     coords_to_index,
@@ -305,6 +305,30 @@ class Board(object):
             ])
 
         return result
+
+    def check_game_over(self, player_turn):
+        white_moves = self.get_available_moves(Player.WHITE)
+        black_moves = self.get_available_moves(Player.BLACK)
+
+        # If a player is unable to move, they lose.
+        if player_turn == Player.WHITE and not white_moves:
+            return GameOverReason.BLACK_WON
+        if player_turn == Player.BLACK and not black_moves:
+            return GameOverReason.WHITE_WON
+
+        # If both players have only one king left, the game is a draw.
+        white_squares = self.get_player_squares(Player.WHITE)
+        black_squares = self.get_player_squares(Player.BLACK)
+        only_one_king_each = (
+            len(white_squares) == 1 and
+            len(black_squares) == 1 and
+            self.piece_class[white_squares[0]] == PieceClass.KING and
+            self.piece_class[black_squares[0]] == PieceClass.KING
+        )
+        if only_one_king_each:
+            return GameOverReason.DRAW
+
+        return None
 
     def clone(self):
         return deepcopy(self)
