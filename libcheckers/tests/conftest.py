@@ -104,6 +104,20 @@ def multiple_capture_options_men_board():
 
 
 @pytest.fixture
+def multiple_capture_options_complex_board():
+    board = Board()
+    board.add_piece(23, Player.BLACK, PieceClass.KING)
+    board.add_piece(28, Player.BLACK, PieceClass.MAN)
+    board.add_piece(18, Player.WHITE, PieceClass.MAN)
+    board.add_piece(7, Player.WHITE, PieceClass.MAN)
+    board.add_piece(19, Player.WHITE, PieceClass.MAN)
+    board.add_piece(14, Player.WHITE, PieceClass.MAN)
+    board.add_piece(32, Player.WHITE, PieceClass.MAN)
+    board.add_piece(29, Player.WHITE, PieceClass.MAN)
+    return board
+
+
+@pytest.fixture
 def insane_king_combo_board():
     # From Wikipedia GIF: https://en.wikipedia.org/wiki/International_draughts
     board = Board()

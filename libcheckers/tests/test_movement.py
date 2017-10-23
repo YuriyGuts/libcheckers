@@ -175,6 +175,11 @@ def test_get_capturable_pieces_1v1_cornered_kings(one_vs_one_kings_cornered_boar
     assert board.get_capturable_pieces(46) == []
 
 
+def test_get_capturable_pieces_complex(multiple_capture_options_complex_board):
+    board = multiple_capture_options_complex_board
+    assert sorted(board.get_capturable_pieces(23)) == [18, 29]
+
+
 def test_get_movement_destinations(one_vs_one_men_surrender_board):
     board = one_vs_one_men_surrender_board
     assert sorted(board.get_free_movement_destinations(18)) == [22, 23]

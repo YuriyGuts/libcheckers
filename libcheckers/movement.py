@@ -207,6 +207,7 @@ class Board(object):
                 # Can only capture if the square following the piece is empty.
                 if self.owner[line[i]] and self.owner[line[i]] != own_color and not self.owner[line[i + 1]]:
                     result.append(line[i])
+                    break
 
         return result
 
@@ -232,8 +233,8 @@ class Board(object):
             current_index = coords_to_index(current_row, current_col)
             if not self.owner[current_index]:
                 result.append(current_index)
-                current_row = current_row + movement_row
-                current_col = current_col + movement_col
+                current_row += movement_row
+                current_col += movement_col
             else:
                 break
 
