@@ -1,6 +1,17 @@
-from libcheckers.enum import Player, PieceClass
+from libcheckers.enum import Player, PieceClass, GameOverReason
 from libcheckers.movement import ForwardMove, CaptureMove, ComboCaptureMove
-from libcheckers.serialization import load_board, save_board, load_move, save_move
+from libcheckers.serialization import (
+    load_board,
+    save_board,
+    load_move,
+    save_move,
+    load_player,
+    save_player,
+    load_piece_class,
+    save_piece_class,
+    load_game_over_reason,
+    save_game_over_reason,
+)
 
 
 def test_deserialize_board():
@@ -42,3 +53,19 @@ def test_serialize_capture_move():
 def test_serialize_combo_capture_move():
     move = ComboCaptureMove([CaptureMove(1, 12), CaptureMove(12, 3), CaptureMove(3, 14)])
     assert load_move(save_move(move)) == move
+
+
+def test_serialize_player():
+    assert load_player(save_player(Player.WHITE)) == Player.WHITE
+    assert load_player(save_player(Player.BLACK)) == Player.BLACK
+
+
+def test_serialize_piece_class():
+    assert load_piece_class(save_piece_class(PieceClass.MAN)) == PieceClass.MAN
+    assert load_piece_class(save_piece_class(PieceClass.KING)) == PieceClass.KING
+
+
+def test_serialize_game_over_reason():
+    assert load_game_over_reason(save_game_over_reason(GameOverReason.WHITE_WON)) == GameOverReason.WHITE_WON
+    assert load_game_over_reason(save_game_over_reason(GameOverReason.BLACK_WON)) == GameOverReason.BLACK_WON
+    assert load_game_over_reason(save_game_over_reason(GameOverReason.DRAW)) == GameOverReason.DRAW

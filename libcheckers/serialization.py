@@ -1,5 +1,5 @@
 from libcheckers import BoardConfig
-from libcheckers.enum import Player, PieceClass
+from libcheckers.enum import Player, PieceClass, GameOverReason
 from libcheckers.movement import Board, ForwardMove, CaptureMove, ComboCaptureMove
 
 
@@ -13,8 +13,15 @@ _piece_class_serializer = {
     PieceClass.KING: 'king',
 }
 
+_game_over_serializer = {
+    GameOverReason.WHITE_WON: 'white_won',
+    GameOverReason.BLACK_WON: 'black_won',
+    GameOverReason.DRAW: 'draw',
+}
+
 _player_deserializer = dict(zip(_player_serializer.values(), _player_serializer.keys()))
 _piece_class_deserializer = dict(zip(_piece_class_serializer.values(), _piece_class_serializer.keys()))
+_game_over_deserializer = dict(zip(_game_over_serializer.values(), _game_over_serializer.keys()))
 
 
 def load_board(board_dict):
@@ -83,3 +90,11 @@ def load_piece_class(piece_class_data):
 
 def save_piece_class(piece_class):
     return _piece_class_serializer[piece_class]
+
+
+def load_game_over_reason(game_over_reason_data):
+    return _game_over_deserializer[game_over_reason_data]
+
+
+def save_game_over_reason(game_over_reason):
+    return _game_over_serializer[game_over_reason]
