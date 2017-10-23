@@ -66,7 +66,7 @@ class CaptureMove(BaseMove):
         self.start_index = start_index
         self.end_index = end_index
 
-    def apply(self, board):
+    def find_opponent_square(self, board):
         path_indexes = get_indexes_between(self.start_index, self.end_index)
         own_color = board.owner[self.start_index]
 
@@ -94,9 +94,13 @@ class CaptureMove(BaseMove):
             msg = 'Cannot move to a non-empty square ({0})'.format(self.end_index)
             raise InvalidMoveException(msg)
 
+        return opponent_path_squares[0]
+
+    def apply(self, board):
+        opponent_square = self.find_opponent_square(board)
         new_board = board.clone()
         new_board.move_piece(self.start_index, self.end_index)
-        new_board.remove_piece(opponent_path_squares[0])
+        new_board.remove_piece(opponent_square)
         return new_board
 
     def __eq__(self, other):
@@ -114,15 +118,28 @@ class ComboCaptureMove(BaseMove):
 
     def apply(self, board):
         new_board = board
+        zombies_to_clear = []
+
         for i, move in enumerate(self.moves):
             # According to the rules, men should not be promoted when merely passing through
             # the home row. They actually need to finish the move there to be promoted.
             old_class = new_board.piece_class[move.start_index]
+
+            # Remove captured pieces only after the move is finished. Otherwise king moves
+            # like "forward, capture right, then capture left" would be allowed.
+            opponent_square = move.find_opponent_square(new_board)
+            zombies_to_clear.append(opponent_square)
+
             new_board = move.apply(new_board)
+            new_board.owner[opponent_square] = Player.ZOMBIE
 
             # Restore the piece class if it was "accidentally" promoted in between the moves.
             if i < len(self.moves) - 1:
                 new_board.piece_class[move.end_index] = old_class
+
+        # Wipe the zombies.
+        for zombie in zombies_to_clear:
+            new_board.remove_piece(zombie)
 
         return new_board
 
@@ -201,8 +218,8 @@ class Board(object):
         result = []
         for line in lines_of_sight:
             for i in range(0, len(line) - 1):
-                # Cannot jump over own pieces.
-                if self.owner[line[i]] == own_color:
+                # Cannot jump over own pieces or previously captured pieces.
+                if self.owner[line[i]] in (own_color, Player.ZOMBIE):
                     break
                 # Cannot capture protected pieces.
                 if self.owner[line[i]] and self.owner[line[i + 1]]:
@@ -270,7 +287,12 @@ class Board(object):
         # Main search queue.
         while queue:
             board_before, move, prev_moves = queue.popleft()
+
+            # Keep the captured pieces because they cannot be removed till the end of turn.
+            opponent_quare = move.find_opponent_square(board_before)
             board_after = move.apply(board_before)
+            board_after.owner[opponent_quare] = Player.ZOMBIE
+
             next_attack_options = [
                 (move.end_index, target)
                 for target in board_after.get_capturable_pieces(move.end_index)

@@ -348,6 +348,19 @@ def test_get_available_moves_2v1_kings(two_vs_one_kings_board):
     assert_moves_equal(actual_moves, expected_moves)
 
 
+def test_combo_capture_keeps_pieces_till_end_of_move(multiple_equal_combo_captures_board):
+    board = multiple_equal_combo_captures_board
+    actual_moves = board.get_available_moves(Player.BLACK)
+    expected_moves = [
+        ComboCaptureMove([CaptureMove(17, 33), CaptureMove(33, 42)]),
+        ComboCaptureMove([CaptureMove(17, 33), CaptureMove(33, 47)]),
+        ComboCaptureMove([CaptureMove(17, 33), CaptureMove(33, 24)]),
+        ComboCaptureMove([CaptureMove(17, 33), CaptureMove(33, 20)]),
+        ComboCaptureMove([CaptureMove(17, 33), CaptureMove(33, 15)]),
+    ]
+    assert_moves_equal(actual_moves, expected_moves)
+
+
 def test_get_available_moves_insane_combo(insane_king_combo_board):
     board = insane_king_combo_board
     actual_moves = board.get_available_moves(Player.WHITE)
