@@ -15,8 +15,26 @@ from libcheckers.utils import (
 
 
 class BaseMove(object):
+    """
+    Represents a move a player can make in the checkers game.
+    """
+
     @abstractmethod
     def apply(self, board):
+        """
+        Apply a move to a board and retrieve the board produced by the move.
+
+        Parameters
+        ----------
+        board
+            The board to apply the move to.
+
+        Returns
+        -------
+        Board
+            A new board that will be produced after applying this move.
+        """
+
         return board
 
     @abstractmethod
@@ -29,6 +47,10 @@ class BaseMove(object):
 
 
 class ForwardMove(BaseMove):
+    """
+    Represents a free movement action (the one that does not capture any opponent pieces).
+    """
+
     def __init__(self, start_index, end_index):
         self.start_index = start_index
         self.end_index = end_index
@@ -62,11 +84,19 @@ class ForwardMove(BaseMove):
 
 
 class CaptureMove(BaseMove):
+    """
+    Represents a move that captures a single opponent piece.
+    """
+
     def __init__(self, start_index, end_index):
         self.start_index = start_index
         self.end_index = end_index
 
     def find_opponent_square(self, board):
+        """
+        Retrieve the index of the square that contains the enemy piece to be captured.
+        """
+
         path_indexes = get_indexes_between(self.start_index, self.end_index)
         own_color = board.owner[self.start_index]
 
@@ -113,6 +143,10 @@ class CaptureMove(BaseMove):
 
 
 class ComboCaptureMove(BaseMove):
+    """
+    Represents a chain of capture moves.
+    """
+
     def __init__(self, moves):
         self.moves = moves
 
@@ -153,11 +187,20 @@ class ComboCaptureMove(BaseMove):
 
 
 class Board(object):
+    """
+    Represents an international checkers game board and
+    contains the movement logic of the game pieces.
+    """
+
     def __init__(self):
         self.owner = [None] * (BoardConfig.total_squares + 1)
         self.piece_class = [None] * (BoardConfig.total_squares + 1)
 
     def move_piece(self, start_index, end_index):
+        """
+        Move an existing game piece from point A to point B.
+        """
+
         self.owner[end_index] = self.owner[start_index]
         self.owner[start_index] = None
 
@@ -171,14 +214,26 @@ class Board(object):
             self.piece_class[end_index] = PieceClass.KING
 
     def add_piece(self, index, player, piece_class):
+        """
+        Place a new piece on the board with the specified owner and class.
+        """
+
         self.owner[index] = player
         self.piece_class[index] = piece_class
 
     def remove_piece(self, index):
+        """
+        Clear the specified square from the board.
+        """
+
         self.owner[index] = None
         self.piece_class[index] = None
 
     def get_player_squares(self, player):
+        """
+        Get all squares on the board owned by the specified player.
+        """
+
         return [
             index
             for index in range(1, BoardConfig.total_squares + 1)
@@ -186,6 +241,10 @@ class Board(object):
         ]
 
     def get_free_movement_destinations(self, index):
+        """
+        Get all allowed destinations for free movement for the piece at the specified square.
+        """
+
         own_color = self.owner[index]
         own_class = self.piece_class[index]
 
@@ -209,6 +268,10 @@ class Board(object):
         return result
 
     def get_capturable_pieces(self, index):
+        """
+        Get all squares that contain opponent's pieces capturable from the specified position.
+        """
+
         own_color = self.owner[index]
         own_class = self.piece_class[index]
 
@@ -232,6 +295,11 @@ class Board(object):
         return result
 
     def get_available_capture_landing_positions(self, attacker_index, capture_index):
+        """
+        If the specified square is captured by the specified attacker,
+        get all possible squares the attacker can land on.
+        """
+
         own_class = self.piece_class[attacker_index]
 
         attacker_row, attacker_col = index_to_coords(attacker_index)
@@ -261,6 +329,11 @@ class Board(object):
         return result
 
     def get_capture_sequence_candidates(self, player):
+        """
+        Get all possible capture move sequences (not necessarily maximum ones)
+        starting from every piece owned by the specified player.
+        """
+
         player_squares = self.get_player_squares(player)
 
         # Check if there are any pieces in our line of sight that can be captured.
@@ -316,6 +389,11 @@ class Board(object):
         return capture_sequences
 
     def get_available_moves(self, player):
+        """
+        For the specified player, get the list of all allowed moves that are applicable
+        to this board according to the game rules.
+        """
+
         result = []
         capture_sequences = self.get_capture_sequence_candidates(player)
 
@@ -338,6 +416,11 @@ class Board(object):
         return result
 
     def check_game_over(self, player_turn):
+        """
+        Check if the game board is in a terminal state from the specified player's point of view.
+        (e.g. a certain player has won or lost, or there is a draw).
+        """
+
         white_moves = self.get_available_moves(Player.WHITE)
         black_moves = self.get_available_moves(Player.BLACK)
 
@@ -364,6 +447,10 @@ class Board(object):
         return None
 
     def clone(self):
+        """
+        Create an independent copy of this board.
+        """
+
         return deepcopy(self)
 
     def __repr__(self):

@@ -6,6 +6,11 @@ valid_move_offsets = [(-1, -1), (-1, +1), (+1, -1), (+1, +1)]
 
 
 def index_to_coords(index):
+    """
+    Transform an index in checkers notation to a (row, column) coordinate pair.
+    Rows are numbered top to bottom, columns are numbered left to right.
+    """
+
     row = (index - 1) // BoardConfig.squares_per_row + 1
     if row % 2:
         col = index % BoardConfig.board_dim * 2
@@ -15,10 +20,18 @@ def index_to_coords(index):
 
 
 def coords_to_index(row, col):
+    """
+    Transform (row, column) coordinate pair to an index in checkers notation.
+    """
+
     return (row - 1) * BoardConfig.squares_per_row + (col - row % 2 + 1) // 2
 
 
 def get_indexes_between(start_index, end_index):
+    """
+    Get the indexes of squares between the given start index and end index (exclusive).
+    """
+
     start_row, start_col = index_to_coords(start_index)
     end_row, end_col = index_to_coords(end_index)
 
@@ -37,19 +50,40 @@ def get_indexes_between(start_index, end_index):
 
 
 def is_black_home_row(index):
+    """
+    Identify whether the square index belongs to the black player's home row.
+    """
+
     return 1 <= index <= BoardConfig.squares_per_row
 
 
 def is_white_home_row(index):
+    """
+    Identify whether the square index belongs to the white player's home row.
+    """
+
     return BoardConfig.total_squares - BoardConfig.squares_per_row < index <= BoardConfig.total_squares
 
 
-def is_edge_square(index):
-    row, col = index_to_coords(index)
-    return row in (1, BoardConfig.board_dim) or col in (1, BoardConfig.board_dim)
-
-
 def get_lines_of_sight(index, visibility_range):
+    """
+    Cast 4 diagonal rays (NW, NE, SW, SE) from the given square index
+    using the specified visibility range.
+
+    Parameters
+    ----------
+    index : int
+        The index of the square to cast the lines of sight from.
+    visibility_range : int
+        Visibility range. For example, 1 will return only the adjacent squares around the piece.
+
+    Returns
+    -------
+    list
+        A list of 4 lists, each containing the indexes of a single diagonal line of sight
+        ordered by distance. Empty lines of sight will be represented by empty lists.
+    """
+
     result = [[] for _ in valid_move_offsets]
     current_row, current_col = index_to_coords(index)
 

@@ -2,7 +2,6 @@ from libcheckers.utils import (
     index_to_coords,
     coords_to_index,
     get_indexes_between,
-    is_edge_square,
     get_lines_of_sight,
 )
 
@@ -36,15 +35,6 @@ def test_get_intermediate_indexes():
     assert sorted(get_indexes_between(7, 23)) == [12, 18]
     assert sorted(get_indexes_between(8, 26)) == [12, 17, 21]
     assert sorted(get_indexes_between(44, 6)) == [11, 17, 22, 28, 33, 39]
-
-
-def test_is_edge_square():
-    assert is_edge_square(1)
-    assert not is_edge_square(7)
-    assert is_edge_square(5)
-    assert not is_edge_square(41)
-    assert is_edge_square(45)
-    assert is_edge_square(50)
 
 
 def test_get_lines_of_sight_mid_board_limited():
