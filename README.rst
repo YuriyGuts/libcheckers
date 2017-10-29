@@ -3,6 +3,8 @@ libcheckers
 
 `International checkers <https://en.wikipedia.org/wiki/International_draughts>`_ gameplay library for the CS301 AI course I teach at UCU.
 
+Parent project: `ucu-ai-checkers <https://github.com/YuriyGuts/ucu-ai-checkers>`_.
+
 Basic Usage
 ===========
 
